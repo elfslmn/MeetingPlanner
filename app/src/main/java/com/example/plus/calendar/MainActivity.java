@@ -1,43 +1,51 @@
 package com.example.plus.calendar;
-//http://abhiandroid.com/ui/calendarview
-
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.CalendarView;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Toast;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    CalendarView calendarView;
-    Intent intent; //HELLO
+    Button button;
+    AutoCompleteTextView tvID;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        intent = new Intent(this, EventActivity.class);
 
+        button= (Button) findViewById(R.id.loginButton);
+        tvID = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_id);
 
-        calendarView = (CalendarView) findViewById(R.id.calendarView); // get the reference of CalendarView
-        calendarView.setFocusedMonthDateColor(Color.RED); // set the red color for the dates of  focused month
-        calendarView.setUnfocusedMonthDateColor(Color.BLUE); // set the yellow color for the dates of an unfocused month
-        calendarView.setSelectedWeekBackgroundColor(Color.GRAY); // red color for the selected week's background
-        calendarView.setWeekSeparatorLineColor(Color.DKGRAY); // green color for the week separator line
-        // perform setOnDateChangeListener event on CalendarView
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                // display the selected date by using a toast
-                int[] date ={dayOfMonth,month,year};
-                //Toast.makeText(getApplicationContext(), dayOfMonth + "/" + month + "/" + year, Toast.LENGTH_LONG).show();
-
-                intent.putExtra("SELECTED_DATE", date);
-                startActivity(intent);  // startActivityForRrsult TODO
+            public void onClick(View v) {
+                String userID = tvID.getText().toString().trim();
+                if(TextUtils.isEmpty(userID)){
+                    Toast.makeText(getApplicationContext(),"Please, write your name and surname", Toast.LENGTH_LONG).show();
+                }
+                else if(!userID.matches("^[a-zA-Z0-9_ ]+$")){
+                    Toast.makeText(getApplicationContext(),
+                            "Username contains only characters in the adapterList, a-z, A-Z, 0-9,underscore and space",
+                            Toast.LENGTH_LONG).show();
+                }
+                else{
+                    intent = new Intent(getApplicationContext(), EventActivity.class);
+                    intent.putExtra("USER_ID",userID);
+                    startActivity(intent);
+                }
 
             }
         });
+
+
+
     }
 }
